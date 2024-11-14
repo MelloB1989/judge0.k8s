@@ -41,15 +41,9 @@ volumes: []
 volumeMounts: []
 
 env:
-  - name: POSTGRES_HOST
-    value: "postgres.default.svc.cluster.local"
-  - name: POSTGRES_PORT
-    value: "5432" # Ensure this is a string, not a number
-  - name: POSTGRES_USER
-    value: "admin"
-  - name: POSTGRES_PASSWORD
-    value: "Mellob198978SadcDWFewd"
-  - name: POSTGRES_DB
-    value: "judge0"
-  - name: REDIS_PASSWORD
-    value: "redispassword"
+  POSTGRES_HOST: "postgres.default.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: "admin"
+  POSTGRES_PASSWORD: "Mellob198978SadcDWFewd"
+  POSTGRES_DB: "judge0"
+  REDIS_PASSWORD: "redispassword"

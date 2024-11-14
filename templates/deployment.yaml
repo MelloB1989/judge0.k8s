@@ -19,46 +19,18 @@ spec:
           image: {{ .Values.image.judge0 }}
           env:
             - name: POSTGRES_HOST
-              value: {{ .Values.env.POSTGRES_HOST }}
+              value: "postgres.default.svc.cluster.local"
             - name: POSTGRES_PORT
-              value: {{ .Values.env.POSTGRES_PORT }}
+              value: "5432"  # Enclose port in quotes
             - name: POSTGRES_USER
-              value: {{ .Values.env.POSTGRES_USER }}
+              value: "admin"
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.env.POSTGRES_PASSWORD }}
+              value: "Mellob198978SadcDWFewd"
             - name: POSTGRES_DB
-              value: {{ .Values.env.POSTGRES_DB }}
+              value: "judge0"
             - name: REDIS_PASSWORD
-              value: {{ .Values.env.REDIS_PASSWORD }}
+              value: "redispassword"
       volumes:
         - name: judge0-config
           configMap:
             name: judge0-env  # Ensure this matches the ConfigMap name
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: judge0-worker
-  labels:
-    app: judge0
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: judge0
-  template:
-    metadata:
-      labels:
-        app: judge0
-    spec:
-      containers:
-        - name: judge0-worker
-          image: {{ .Values.image.judge0 }}
-          volumeMounts:
-            - name: judge0-config
-              mountPath: /judge0.conf
-              subPath: judge0.conf
-      volumes:
-        - name: judge0-config
-          configMap:
-            name: judge0-env
