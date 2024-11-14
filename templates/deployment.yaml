@@ -17,11 +17,47 @@ spec:
       containers:
         - name: judge0-server
           image: {{ .Values.image.judge0 }}
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+          volumeMounts:
+            - name: submissions
+              mountPath: /box
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+              readOnly: true
           env:
             - name: POSTGRES_HOST
               value: "postgres.default.svc.cluster.local"
             - name: POSTGRES_PORT
-              value: "5432"  # Enclose port in quotes
+              value: "5432"
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_PASSWORD
+              value: "Mellob198978SadcDWFewd"
+            - name: POSTGRES_DB
+              value: "judge0"
+            - name: REDIS_HOST
+              value: "10.224.0.15"
+            - name: REDIS_PASSWORD
+              value: "redispassword"
+        - name: judge0-worker
+          image: {{ .Values.image.judge0 }}
+          command: ["./scripts/workers"]
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+          volumeMounts:
+            - name: submissions
+              mountPath: /box
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+              readOnly: true
+          env:
+            - name: POSTGRES_HOST
+              value: "postgres.default.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
             - name: POSTGRES_USER
               value: "admin"
             - name: POSTGRES_PASSWORD
@@ -33,6 +69,8 @@ spec:
             - name: REDIS_PASSWORD
               value: "redispassword"
       volumes:
-        - name: judge0-config
-          configMap:
-            name: judge0-env  # Ensure this matches the ConfigMap name
+        - name: submissions
+          emptyDir: {}
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup  # Mounts the host's cgroup directory
