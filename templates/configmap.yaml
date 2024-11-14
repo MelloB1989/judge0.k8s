@@ -4,9 +4,10 @@ metadata:
   name: judge0-env
   namespace: judge0
 data:
-  POSTGRES_HOST: "{{ .Values.env.POSTGRES_HOST }}"
-  POSTGRES_PORT: "{{ .Values.env.POSTGRES_PORT }}"
-  POSTGRES_USER: "{{ .Values.env.POSTGRES_USER }}"
-  POSTGRES_PASSWORD: "{{ .Values.env.POSTGRES_PASSWORD }}"
-  POSTGRES_DB: "{{ .Values.env.POSTGRES_DB }}"
-  REDIS_PASSWORD: "{{ .Values.env.REDIS_PASSWORD }}"
+  POSTGRES_HOST: postgres.default.svc.cluster.local
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: Mellob198978SadcDWFewd
+  POSTGRES_DB: judge0
+  REDIS_HOST: 10.224.0.15
+  REDIS_PASSWORD: redispassword

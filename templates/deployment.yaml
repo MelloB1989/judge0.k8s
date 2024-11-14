@@ -28,6 +28,8 @@ spec:
               value: "Mellob198978SadcDWFewd"
             - name: POSTGRES_DB
               value: "judge0"
+            - name: REDIS_HOST
+              value: "10.224.0.15"
             - name: REDIS_PASSWORD
               value: "redispassword"
       volumes:
