@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge0-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: judge0-redis
+  template:
+    metadata:
+      labels:
+        app: judge0-redis
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.image.redis }}
+          command:
+            [
+              "bash",
+              "-c",
+              'docker-entrypoint.sh --appendonly no --requirepass "$$REDIS_PASSWORD"',
+            ]
+          envFrom:
+            - configMapRef:
+                name: judge0-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: judge0-redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: judge0-redis

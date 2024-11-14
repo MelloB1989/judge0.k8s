@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+  namespace: judge0
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/postgres

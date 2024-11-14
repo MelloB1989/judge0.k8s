@@ -1,0 +1,55 @@
+# Default values for judge0-noobsverse.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  judge0: judge0/judge0:latest
+  postgres: postgres:16.2 # You can still leave this as it is for the image configuration, but it won't be used
+  redis: redis:7.2.4
+
+service:
+  type: ClusterIP
+  port: 2358
+
+persistence:
+  enabled: false # Disable persistence for internal PostgreSQL since you're using external DB
+  postgresVolumeSize: 10Gi
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+volumes: []
+volumeMounts: []
+
+env:
+  - name: POSTGRES_HOST
+    value: "postgres.default.svc.cluster.local"
+  - name: POSTGRES_PORT
+    value: "5432" # Ensure this is a string, not a number
+  - name: POSTGRES_USER
+    value: "admin"
+  - name: POSTGRES_PASSWORD
+    value: "Mellob198978SadcDWFewd"
+  - name: POSTGRES_DB
+    value: "judge0"
+  - name: REDIS_PASSWORD
+    value: "redispassword"

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge0-server
+  labels:
+    app: judge0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: judge0
+  template:
+    metadata:
+      labels:
+        app: judge0
+    spec:
+      containers:
+        - name: judge0-server
+          image: {{ .Values.image.judge0 }}
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.env.POSTGRES_HOST }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.env.POSTGRES_PORT }}
+            - name: POSTGRES_USER
+              value: {{ .Values.env.POSTGRES_USER }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.env.POSTGRES_PASSWORD }}
+            - name: POSTGRES_DB
+              value: {{ .Values.env.POSTGRES_DB }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.env.REDIS_PASSWORD }}
+      volumes:
+        - name: judge0-config
+          configMap:
+            name: judge0-env  # Ensure this matches the ConfigMap name
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge0-worker
+  labels:
+    app: judge0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: judge0
+  template:
+    metadata:
+      labels:
+        app: judge0
+    spec:
+      containers:
+        - name: judge0-worker
+          image: {{ .Values.image.judge0 }}
+          volumeMounts:
+            - name: judge0-config
+              mountPath: /judge0.conf
+              subPath: judge0.conf
+      volumes:
+        - name: judge0-config
+          configMap:
+            name: judge0-env

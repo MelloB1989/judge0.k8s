@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge0-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: judge0-postgres
+  template:
+    metadata:
+      labels:
+        app: judge0-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.image.postgres }}
+          envFrom:
+            - configMapRef:
+                name: judge0-env
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-pvc   # Mounts the persistent volume
+      volumes:
+        - name: postgres-pvc      # Ensure this volume is defined here
+          persistentVolumeClaim:
+            claimName: postgres-pvc   # Make sure this matches the PVC name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: judge0-postgres
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: judge0-postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.postgresVolumeSize }}  # Ensure this is set in values.yaml
